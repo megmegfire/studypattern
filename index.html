@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>あなたにぴったりの勉強方法診断</title>
+    <style>
+        /* 基本設定 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Maru Gothic ProN', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+            padding: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* タイトルエリア */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #4A90E2;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .target {
+            display: inline-block;
+            background: #E3F2FD;
+            color: #4A90E2;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* 質問エリア */
+        .question-section {
+            margin-bottom: 30px;
+        }
+
+        .type-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #4A90E2 0%, #64B5F6 100%);
+            color: white;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .type-icon {
+            font-size: 28px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #F8FCFF;
+            border: 2px solid #E3F2FD;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #E3F2FD;
+            border-color: #4A90E2;
+            transform: translateX(5px);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #4A90E2;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* ボタン */
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #4A90E2 0%, #64B5F6 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* 結果画面 */
+        .result-container {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            color: #4A90E2;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .result-description {
+            background: #E3F2FD;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .score-info {
+            background: #F8FCFF;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .score-detail {
+            margin-top: 10px;
+        }
+
+        .score-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            width: 120px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .score-bar-container {
+            flex: 1;
+            height: 20px;
+            background: #E3F2FD;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4A90E2, #64B5F6);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .score-number {
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: #4A90E2;
+        }
+
+        /* アクションボタン */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-button {
+            padding: 12px 25px;
+            border: 2px solid #4A90E2;
+            background: white;
+            color: #4A90E2;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .action-button:hover {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .action-button.primary {
+            background: linear-gradient(135deg, #4A90E2 0%, #64B5F6 100%);
+            color: white;
+            border: none;
+        }
+
+        .action-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        /* プライバシー通知 */
+        .privacy-notice {
+            background: #FFF8E1;
+            border: 1px solid #FFE082;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #666;
+            text-align: left;
+        }
+
+        .privacy-notice strong {
+            color: #F57C00;
+        }
+
+        /* ローディング */
+        .loading {
+            display: none;
+            text-align: center;
+            color: #4A90E2;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .result-title {
+                font-size: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 診断画面 -->
+        <div id="quiz-container">
+            <div class="header">
+                <h1>🎯 あなたにぴったりの勉強方法診断</h1>
+                <p class="description">あなたの性格や学習スタイルから、最適な勉強法を見つけます</p>
+                <span class="target">中学生・高校生向け</span>
+            </div>
+
+            <div class="privacy-notice">
+                <strong>📊 データ収集について</strong><br>
+                診断結果は統計データとして記録されます。個人を特定できる情報は収集しません。
+            </div>
+
+            <form id="quiz-form">
+                <!-- 質問はJavaScriptで動的に生成されます -->
+                
+                <div class="button-container">
+                    <button type="submit" class="submit-button">診断結果を見る 🎉</button>
+                    <div class="loading" id="loading">結果を計算中...</div>
+                </div>
+            </form>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="result-container" class="result-container">
+            <div class="result-icon" id="result-icon"></div>
+            <h2 class="result-title" id="result-title"></h2>
+            <div class="result-description" id="result-description"></div>
+            
+            <div class="score-info">
+                <strong>📊 あなたのスコア</strong>
+                <div class="score-detail" id="score-detail"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-button primary" onclick="resetQuiz()">もう一度診断する</button>
+                <a class="action-button" id="twitter-share" href="#" target="_blank">𝕏でシェア</a>
+                <a class="action-button" id="line-share" href="#" target="_blank">LINEでシェア</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 診断データ設定
+        const quizData = {
+            visual: {
+                name: '視覚型学習者',
+                icon: '👁️',
+                description: '図やグラフで理解するのが得意なあなた!カラフルなノートを作ったり、マインドマップを活用すると効果的です。YouTubeの解説動画も相性バッチリ👍',
+                questions: [
+                    '教科書の図やイラストをよく見る',
+                    'カラーペンを使ってノートを取るのが好き',
+                    'マインドマップを作ると理解しやすい',
+                    'YouTubeの解説動画が好き',
+                    '文字だけだと頭に入りにくい'
+                ]
+            },
+            auditory: {
+                name: '聴覚型学習者',
+                icon: '🎧',
+                description: '聞いて理解するのが得意なあなた!音読したり、友達と議論しながら学ぶのがおすすめです。ポッドキャストや音声教材もぜひ活用してみて🎵',
+                questions: [
+                    '授業を聞くだけで理解できることが多い',
+                    '音読すると覚えやすい',
+                    'ポッドキャストや音声教材が好き',
+                    '友達と話しながら勉強するのが好き',
+                    '静かすぎる場所より、少し音がある方が集中できる'
+                ]
+            },
+            reading: {
+                name: '読書型学習者',
+                icon: '📚',
+                description: '本や文章から学ぶのが得意なあなた!参考書をじっくり読んだり、ブログ記事で深掘りするのが効果的です。一人で集中できる環境がベスト✨',
+                questions: [
+                    '教科書を読むだけで理解できることが多い',
+                    '普段から小説などを読むのが好き',
+                    '検索が得意でブログやサイト記事を読んで理解する',
+                    '一人でもくもくと作業するのが好き',
+                    '文字だけでも情報を頭に思い描くことができる'
+                ]
+            }
+        };
+
+        // Google Apps ScriptのURLを設定してください
+        const GAS_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+        // 配列をシャッフルする関数(Fisher-Yatesアルゴリズム)
+        function shuffleArray(array) {
+            const newArray = [...array]; // 元の配列を変更しないようにコピー
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // ページ読み込み時に質問をランダムに並び替える
+        window.addEventListener('DOMContentLoaded', function() {
+            // 全ての質問を1つの配列にまとめる
+            const allQuestions = [];
+            
+            Object.keys(quizData).forEach(type => {
+                quizData[type].questions.forEach((question, index) => {
+                    allQuestions.push({
+                        type: type,
+                        text: question,
+                        id: `${type}${index + 1}`,
+                        typeName: quizData[type].name,
+                        icon: quizData[type].icon
+                    });
+                });
+            });
+
+            // 質問をシャッフル
+            const shuffledQuestions = shuffleArray(allQuestions);
+
+            // 質問セクションを全て削除
+            const quizForm = document.getElementById('quiz-form');
+            const questionSections = quizForm.querySelectorAll('.question-section');
+            questionSections.forEach(section => section.remove());
+
+            // 1つの質問セクションとして再構築
+            const newSection = document.createElement('div');
+            newSection.className = 'question-section';
+            
+            const sectionTitle = document.createElement('div');
+            sectionTitle.className = 'type-title';
+            sectionTitle.innerHTML = `
+                <span class="type-icon">📝</span>
+                <span>あなたの学習スタイルをチェック!</span>
+            `;
+            newSection.appendChild(sectionTitle);
+
+            // シャッフルされた質問を追加
+            shuffledQuestions.forEach((q, index) => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" id="q${index}" name="${q.type}" value="1">
+                    <label for="q${index}">${q.text}</label>
+                `;
+                newSection.appendChild(checkboxItem);
+            });
+
+            // ボタンの前に挿入
+            const buttonContainer = quizForm.querySelector('.button-container');
+            quizForm.insertBefore(newSection, buttonContainer);
+        });
+
+        // フォーム送信処理
+        document.getElementById('quiz-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // ローディング表示
+            document.getElementById('loading').style.display = 'block';
+            
+            // スコア計算
+            const scores = {
+                visual: document.querySelectorAll('input[name="visual"]:checked').length,
+                auditory: document.querySelectorAll('input[name="auditory"]:checked').length,
+                reading: document.querySelectorAll('input[name="reading"]:checked').length
+            };
+
+            // 最高スコアを見つける
+            const maxScore = Math.max(scores.visual, scores.auditory, scores.reading);
+            const topTypes = Object.keys(scores).filter(type => scores[type] === maxScore);
+
+            // 結果タイプを決定
+            let resultType, resultTitle;
+            if (topTypes.length === 1) {
+                resultType = topTypes[0];
+                resultTitle = quizData[resultType].name;
+            } else {
+                // ハイブリッドタイプ
+                resultType = topTypes.join('_');
+                const typeNames = topTypes.map(t => quizData[t].name.replace('学習者', '')).join('×');
+                resultTitle = `${typeNames}のハイブリッドタイプ`;
+            }
+
+            // 結果を表示
+            displayResult(resultType, topTypes, scores);
+
+            // データ送信
+            await sendToGoogleSheets(resultType, scores);
+        });
+
+        // 結果表示関数
+        function displayResult(resultType, topTypes, scores) {
+            // 診断画面を隠す
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            
+            // 結果画面を表示
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.style.display = 'block';
+
+            // アイコンとタイトル
+            if (topTypes.length === 1) {
+                document.getElementById('result-icon').textContent = quizData[topTypes[0]].icon;
+                document.getElementById('result-title').textContent = quizData[topTypes[0]].name;
+                document.getElementById('result-description').textContent = quizData[topTypes[0]].description;
+            } else {
+                // ハイブリッドの場合
+                const icons = topTypes.map(t => quizData[t].icon).join(' ');
+                document.getElementById('result-icon').textContent = icons;
+                const typeNames = topTypes.map(t => quizData[t].name.replace('学習者', '')).join('×');
+                document.getElementById('result-title').textContent = `${typeNames}のハイブリッドタイプ`;
+                
+                const descriptions = topTypes.map(t => quizData[t].description).join('\n\n');
+                document.getElementById('result-description').textContent = 
+                    `あなたは複数の学習スタイルを持っています!それぞれの良いところを組み合わせて学習すると効果的です✨\n\n${descriptions}`;
+            }
+
+            // スコア詳細
+            const scoreDetail = document.getElementById('score-detail');
+            scoreDetail.innerHTML = `
+                <div class="score-bar">
+                    <div class="score-label">👁️ 視覚型</div>
+                    <div class="score-bar-container">
+                        <div class="score-bar-fill" style="width: ${scores.visual * 20}%"></div>
+                    </div>
+                    <div class="score-number">${scores.visual}/5</div>
+                </div>
+                <div class="score-bar">
+                    <div class="score-label">🎧 聴覚型</div>
+                    <div class="score-bar-container">
+                        <div class="score-bar-fill" style="width: ${scores.auditory * 20}%"></div>
+                    </div>
+                    <div class="score-number">${scores.auditory}/5</div>
+                </div>
+                <div class="score-bar">
+                    <div class="score-label">📚 読書型</div>
+                    <div class="score-bar-container">
+                        <div class="score-bar-fill" style="width: ${scores.reading * 20}%"></div>
+                    </div>
+                    <div class="score-number">${scores.reading}/5</div>
+                </div>
+            `;
+
+            // シェアボタンのリンク設定
+            const shareText = `私の学習タイプは「${document.getElementById('result-title').textContent}」でした!あなたもやってみよう!`;
+            const shareUrl = window.location.href;
+            
+            document.getElementById('twitter-share').href = 
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+            
+            document.getElementById('line-share').href = 
+                `https://line.me/R/msg/text/?${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+        }
+
+        // Google Sheetsにデータ送信
+        async function sendToGoogleSheets(resultType, scores) {
+            try {
+                // デバイス情報取得
+                const deviceInfo = {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    screenWidth: window.screen.width,
+                    screenHeight: window.screen.height
+                };
+
+                // 位置情報取得(IPベース - GAS側で処理)
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    resultType: resultType,
+                    visualScore: scores.visual,
+                    auditoryScore: scores.auditory,
+                    readingScore: scores.reading,
+                    deviceInfo: JSON.stringify(deviceInfo)
+                };
+
+                // GAS_URLが設定されている場合のみ送信
+                if (GAS_URL && GAS_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    console.log('データ送信完了');
+                } else {
+                    console.log('GAS_URLが未設定のため、データ送信をスキップしました');
+                }
+            } catch (error) {
+                console.error('データ送信エラー:', error);
+                // エラーが出ても診断結果は表示される
+            }
+        }
+
+        // もう一度診断する
+        function resetQuiz() {
+            // フォームをリセット
+            document.getElementById('quiz-form').reset();
+            
+            // 画面を切り替え
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            
+            // ページトップへスクロール
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
